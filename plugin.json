@@ -1,0 +1,23 @@
+{
+    "name": "AwsTracking",
+    "version": "0.1.0",
+    "description": "Send Trcking to AWS Queue instead ",
+    "theme": false,
+    "keywords": ["tracker", "tracking", "aws"],
+    "license": "GPL v3+",
+    "homepage": "http://www.advanced-online-marketing.com",
+    "require": {
+        "piwik": ">=3.0.0-b1,<4.0.0-b1"
+    },
+    "support": {
+        "issues": "https://github.com/advanced-online-marketing/AwsTracking/issues",
+        "source": "https://github.com/advanced-online-marketing/AwsTracking",
+        "wiki": "https://github.com/advanced-online-marketing/AwsTracking/wiki"
+    },
+    "authors": [
+        {
+            "name": "Daniel Stonies",
+            "email": "daniel.stonies@googlemail.com"
+        }
+    ]
+}
