@@ -12,7 +12,6 @@ use Piwik\Plugins\AwsTracking\Tracker\Handler;
 
 class AwsTracking extends \Piwik\Plugin
 {
-
     /**
      * @param bool|string $pluginName
      */
@@ -24,14 +23,13 @@ class AwsTracking extends \Piwik\Plugin
         parent::__construct($pluginName);
     }
 
-
     /**
      * @see \Piwik\Plugin::registerEvents
      */
     public function registerEvents()
     {
         return array(
-            'Tracker.newHandler' => 'replaceHandlerIfQueueIsEnabled'
+            'Tracker.newHandler' => 'replaceHandler'
         );
     }
 
@@ -40,14 +38,8 @@ class AwsTracking extends \Piwik\Plugin
         return true;
     }
 
-    public function replaceHandlerIfQueueIsEnabled(&$handler)
+    public function replaceHandler(&$handler)
     {
-//        $settings = Queue\Factory::getSettings();
-
-//        $settings = StaticContainer::get('Piwik\Plugins\AwsTracking\SystemSettings');
-
         $handler = new Handler();
-
     }
-
 }

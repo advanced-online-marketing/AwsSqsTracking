@@ -9,12 +9,10 @@
 namespace Piwik\Plugins\AwsTracking\Tracker;
 
 use Piwik\Common;
-use Piwik\Tracker;
 use Piwik\Tracker\Response as TrackerResponse;
 
 class Response extends TrackerResponse
 {
-
     public function sendResponseToBrowserDirectly()
     {
         while (ob_get_level() > 1) {
@@ -27,5 +25,4 @@ class Response extends TrackerResponse
         ob_end_flush();
         flush();
     }
-
 }

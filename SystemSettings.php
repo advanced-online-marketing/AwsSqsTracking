@@ -8,15 +8,8 @@
  */
 namespace Piwik\Plugins\AwsTracking;
 
-use Piwik\Cache;
-use Piwik\Config;
-use Piwik\Plugins\AwsTracking\Settings\NumWorkers;
 use Piwik\Settings\Setting;
 use Piwik\Settings\FieldConfig;
-use Piwik\Settings\Storage\Backend;
-use Piwik\Plugins\AwsTracking\Queue\Factory;
-use Piwik\Piwik;
-use Exception;
 
 /**
  * Defines Settings for AwsTracking.
@@ -30,9 +23,6 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
     public $secretKey;
 
     /** @var Setting */
-    public $profile;
-
-    /** @var Setting */
     public $region;
 
     /** @var Setting */
@@ -42,24 +32,8 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
     {
         $this->accessKey = $this->createAccessKeySetting();
         $this->secretKey = $this->createSecretKeySetting();
-        $this->profile = $this->createProfileSetting();
         $this->region = $this->createRegionSetting();
         $this->queueUrl = $this->createQueueUrlSetting();
-    }
-
-    public function isUsingSentinelBackend()
-    {
-        return $this->useSentinelBackend->getValue();
-    }
-
-    public function getRegion()
-    {
-        return $this->region->getValue();
-    }
-
-    public function isUsingUnixSocket()
-    {
-        return substr($this->accessKey->getValue(), 0, 1) === '/';
     }
 
     private function createAccessKeySetting()
@@ -80,27 +54,6 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         });
     }
 
-
-    private function createQueueUrlSetting()
-    {
-        $setting = $this->makeSetting('queueUrl', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
-            $field->title = 'queueUrl for SQS';
-            $field->uiControl = FieldConfig::UI_CONTROL_TEXT;
-            $field->uiControlAttributes = array('size' => 100);
-            $field->inlineHelp = 'queueUrl for SQS';
-            $field->validate = function ($value) {
-
-
-                if (strlen($value) > 100) {
-                    throw new \Exception('Max 100 characters allowed');
-                }
-            };
-        });
-
-        return $setting;
-    }
-
-
     private function createSecretKeySetting()
     {
         return $this->makeSetting('secretKey', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
@@ -116,13 +69,13 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         });
     }
 
-    private function createProfileSetting()
+    private function createRegionSetting()
     {
-        return $this->makeSetting('profile', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
-            $field->title = 'AWS Profile';
+        return $this->makeSetting('region', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
+            $field->title = 'AWS Region';
             $field->uiControl = FieldConfig::UI_CONTROL_TEXT;
             $field->uiControlAttributes = array('size' => 100);
-            $field->inlineHelp = 'AWS Profile.';
+            $field->inlineHelp = 'AWS Region, e.g. "eu-central-1"';
             $field->validate = function ($value) {
                 if (strlen($value) > 100) {
                     throw new \Exception('Max 100 characters allowed');
@@ -131,19 +84,20 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         });
     }
 
-
-    private function createRegionSetting()
+    private function createQueueUrlSetting()
     {
-        return $this->makeSetting('region', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
-            $field->title = 'AWS Region';
+        $setting = $this->makeSetting('queueUrl', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
+            $field->title = 'AWS SQS Queue URL';
             $field->uiControl = FieldConfig::UI_CONTROL_TEXT;
             $field->uiControlAttributes = array('size' => 100);
-            $field->inlineHelp = 'AWS Region.';
+            $field->inlineHelp = 'AWS SQS Queue URL';
             $field->validate = function ($value) {
                 if (strlen($value) > 100) {
                     throw new \Exception('Max 100 characters allowed');
                 }
             };
         });
+
+        return $setting;
     }
 }

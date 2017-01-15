@@ -1,23 +1,32 @@
 {
-    "name": "AwsTracking",
-    "version": "0.1.0",
-    "description": "Send Trcking to AWS Queue instead ",
-    "theme": false,
-    "keywords": ["tracker", "tracking", "aws"],
-    "license": "GPL v3+",
-    "homepage": "http://www.advanced-online-marketing.com",
-    "require": {
-        "piwik": ">=3.0.0-b1,<4.0.0-b1"
+  "name": "AwsTracking",
+  "version": "0.2.0",
+  "description": "Sends Piwik tracking events to AWS SQS queue instead of processing them internally.",
+  "theme": false,
+  "keywords": [
+    "tracker",
+    "tracking",
+    "aws"
+  ],
+  "license": "GPL v3+",
+  "homepage": "http://www.advanced-online-marketing.com",
+  "require": {
+    "piwik": ">=3.0.0-b1,<4.0.0-b1"
+  },
+  "support": {
+    "issues": "https://github.com/advanced-online-marketing/AwsTracking/issues",
+    "source": "https://github.com/advanced-online-marketing/AwsTracking",
+    "wiki": "https://github.com/advanced-online-marketing/AwsTracking/wiki"
+  },
+  "authors": [
+    {
+      "name": "Daniel Stonies",
+      "email": "daniel.stonies@googlemail.com"
     },
-    "support": {
-        "issues": "https://github.com/advanced-online-marketing/AwsTracking/issues",
-        "source": "https://github.com/advanced-online-marketing/AwsTracking",
-        "wiki": "https://github.com/advanced-online-marketing/AwsTracking/wiki"
-    },
-    "authors": [
-        {
-            "name": "Daniel Stonies",
-            "email": "daniel.stonies@googlemail.com"
-        }
-    ]
+    {
+      "name": "André Kolell",
+      "email": "andre.kolell@gmail.com",
+      "homepage": "http://www.andrekolell.de"
+    }
+  ]
 }
