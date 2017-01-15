@@ -28,9 +28,9 @@ class AwsTracking extends \Piwik\Plugin
      */
     public function registerEvents()
     {
-        return array(
+        return [
             'Tracker.newHandler' => 'replaceHandler'
-        );
+        ];
     }
 
     public function isTrackerPlugin()

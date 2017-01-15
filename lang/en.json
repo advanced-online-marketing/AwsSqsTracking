@@ -1,4 +1,5 @@
 {
-    "AwsTracking": {
-    }
+  "AwsTracking": {
+    "PluginSettings_Setting_KeepUsualBehaviour_Title": "Keep usual behaviour (do both write events to AWS SQS queue and process events immediately)"
+  }
 }

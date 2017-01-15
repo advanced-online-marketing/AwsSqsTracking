@@ -8,6 +8,7 @@
  */
 namespace Piwik\Plugins\AwsTracking;
 
+use Piwik\Piwik;
 use Piwik\Settings\Setting;
 use Piwik\Settings\FieldConfig;
 
@@ -16,17 +17,30 @@ use Piwik\Settings\FieldConfig;
  */
 class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
 {
-    /** @var Setting */
+    /**
+     * @var Setting
+     */
     public $accessKey;
 
-    /** @var Setting */
+    /**
+     * @var Setting
+     */
     public $secretKey;
 
-    /** @var Setting */
+    /**
+     * @var Setting
+     */
     public $region;
 
-    /** @var Setting */
+    /**
+     * @var Setting
+     */
     public $queueUrl;
+
+    /**
+     * @var Setting
+     */
+    public $keepUsualBehaviour;
 
     protected function init()
     {
@@ -34,6 +48,7 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         $this->secretKey = $this->createSecretKeySetting();
         $this->region = $this->createRegionSetting();
         $this->queueUrl = $this->createQueueUrlSetting();
+        $this->keepUsualBehaviour = $this->createKeepUsualBehaviourSetting();
     }
 
     private function createAccessKeySetting()
@@ -86,7 +101,7 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
 
     private function createQueueUrlSetting()
     {
-        $setting = $this->makeSetting('queueUrl', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
+        return $this->makeSetting('queueUrl', $default = '', FieldConfig::TYPE_STRING, function (FieldConfig $field) {
             $field->title = 'AWS SQS Queue URL';
             $field->uiControl = FieldConfig::UI_CONTROL_TEXT;
             $field->uiControlAttributes = array('size' => 100);
@@ -97,7 +112,18 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
                 }
             };
         });
+    }
 
-        return $setting;
+    private function createKeepUsualBehaviourSetting()
+    {
+        return $this->makeSetting(
+            'keepUsualBehaviour',
+            $default = true,
+            FieldConfig::TYPE_BOOL,
+            function (FieldConfig $field) {
+                $field->title = Piwik::translate('AwsTracking_PluginSettings_Setting_KeepUsualBehaviour_Title');
+                $field->uiControl = FieldConfig::UI_CONTROL_CHECKBOX;
+            }
+        );
     }
 }

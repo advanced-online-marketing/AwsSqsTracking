@@ -9,7 +9,6 @@
 
 namespace Piwik\Plugins\AwsTracking\Tracker;
 
-use Aws\Credentials\Credentials;
 use Aws\Sqs\SqsClient;
 use Piwik\Container\StaticContainer;
 use Piwik\Plugins\AwsTracking\SystemSettings;
@@ -31,7 +30,7 @@ class Handler extends Tracker\Handler
      */
     public function __construct()
     {
-        $this->setResponse(new Response());
+        parent::__construct();
 
         /** @var SystemSettings $settings */
         $settings = StaticContainer::get('Piwik\Plugins\AwsTracking\SystemSettings');
@@ -58,12 +57,20 @@ class Handler extends Tracker\Handler
         /** @var SystemSettings $settings */
         $settings = StaticContainer::get('Piwik\Plugins\AwsTracking\SystemSettings');
 
+        // Write tracking event to AWS SQS queue
         $this->client->sendMessage(array(
             'QueueUrl'    => $settings->queueUrl->getValue(),
             'MessageBody' => json_encode($requestSet->getState()),
         ));
 
-        $this->sendResponseNow($tracker, $requestSet);
+        // Keep usual behaviour and process tracking event as if this plugin would not exist?
+        if ($settings->keepUsualBehaviour->getValue()) {
+            foreach ($requestSet->getRequests() as $request) {
+                $tracker->trackRequest($request);
+            }
+        } else {
+            $this->sendResponseNow($tracker, $requestSet);
+        }
     }
 
     /**
