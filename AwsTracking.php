@@ -1,16 +1,10 @@
 <?php
-/**
- * Piwik - free/libre analytics platform
- *
- * @link http://piwik.org
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- */
-namespace Piwik\Plugins\AwsTracking;
 
-use Piwik\Plugins\AwsTracking\Tracker\Handler;
+namespace Piwik\Plugins\AwsSqsTracking;
 
-class AwsTracking extends \Piwik\Plugin
+use Piwik\Plugins\AwsSqsTracking\Tracker\Handler;
+
+class AwsSqsTracking extends \Piwik\Plugin
 {
     /**
      * @param bool|string $pluginName
@@ -18,7 +12,7 @@ class AwsTracking extends \Piwik\Plugin
     public function __construct($pluginName = false)
     {
         // Add composer dependencies
-        require_once PIWIK_INCLUDE_PATH . '/plugins/AwsTracking/vendor/autoload.php';
+        require_once PIWIK_INCLUDE_PATH . '/plugins/AwsSqsTracking/vendor/autoload.php';
 
         parent::__construct($pluginName);
     }

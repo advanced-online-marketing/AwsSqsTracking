@@ -1,17 +1,10 @@
 <?php
-/**
- * Piwik - free/libre analytics platform
- *
- * @link http://piwik.org
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- */
 
-namespace Piwik\Plugins\AwsTracking\Tracker;
+namespace Piwik\Plugins\AwsSqsTracking\Tracker;
 
 use Aws\Sqs\SqsClient;
 use Piwik\Container\StaticContainer;
-use Piwik\Plugins\AwsTracking\SystemSettings;
+use Piwik\Plugins\AwsSqsTracking\SystemSettings;
 use Piwik\Tracker;
 use Piwik\Tracker\RequestSet;
 
@@ -33,7 +26,7 @@ class Handler extends Tracker\Handler
         parent::__construct();
 
         /** @var SystemSettings $settings */
-        $settings = StaticContainer::get('Piwik\Plugins\AwsTracking\SystemSettings');
+        $settings = StaticContainer::get('Piwik\Plugins\AwsSqsTracking\SystemSettings');
 
         $this->client = SqsClient::factory([
             'region'  => $settings->region->getValue(),
@@ -55,11 +48,11 @@ class Handler extends Tracker\Handler
     public function process(Tracker $tracker, RequestSet $requestSet)
     {
         /** @var SystemSettings $settings */
-        $settings = StaticContainer::get('Piwik\Plugins\AwsTracking\SystemSettings');
+        $settings = StaticContainer::get('Piwik\Plugins\AwsSqsTracking\SystemSettings');
 
         // Write tracking event to AWS SQS queue
         $this->client->sendMessage(array(
-            'QueueUrl'    => $settings->queueUrl->getValue(),
+            'QueueUrl' => $settings->inputQueueUrl->getValue(),
             'MessageBody' => json_encode($requestSet->getState()),
         ));
 
