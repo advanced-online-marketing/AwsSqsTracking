@@ -37,6 +37,11 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
      */
     public $inputQueueUrl;
 
+    /**
+     * @var Setting
+     */
+    public $keepUsualBehaviour;
+
     protected function init()
     {
         $this->accessKey = $this->createAccessKeySetting();
@@ -44,6 +49,7 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         $this->region = $this->createRegionSetting();
         $this->outputQueueUrl = $this->createOutputQueueUrlSetting();
         $this->inputQueueUrl = $this->createInputQueueUrlSetting();
+        $this->keepUsualBehaviour = $this->createKeepUsualBehaviourSetting();
     }
 
     private function createAccessKeySetting()
@@ -117,4 +123,18 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
             }
         );
     }
+
+    private function createKeepUsualBehaviourSetting()
+    {
+        return $this->makeSetting(
+            'keepUsualBehaviour',
+            $default = true,
+            FieldConfig::TYPE_BOOL,
+            function (FieldConfig $field) {
+                $field->title = Piwik::translate('AwsSqsTracking_PluginSettings_Setting_KeepUsualBehaviour_Title');
+                $field->uiControl = FieldConfig::UI_CONTROL_CHECKBOX;
+            }
+        );
+    }
+
 }
