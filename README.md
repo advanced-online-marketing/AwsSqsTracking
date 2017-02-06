@@ -9,8 +9,5 @@ When activated, it writes all incoming tracking events into a configurable AWS S
 You can configure if the events should only be written to the AWS SQS queue or if they should be both written to the 
 AWS SQS queue and be processed regularly.
 
-
-## TODO
-
-* Command that retrieves from a different queue
-* Does "keepUsualBehaviour" setting work?
+By running `./console aws-sqs-tracking:process` the tracking events can be retrieved and processed from that queue or 
+from another queue.
