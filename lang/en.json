@@ -1,5 +1,13 @@
 {
-  "AwsTracking": {
+  "AwsSqsTracking": {
+    "PluginSettings_Setting_AccessKey_Title": "AWS Access Key",
+    "PluginSettings_Setting_SecretKey_Title": "AWS Secret Key",
+    "PluginSettings_Setting_Region_Title": "AWS Region",
+    "PluginSettings_Setting_Region_Description": "AWS Region, e.g. 'eu-central-1'.",
+    "PluginSettings_Setting_OutputQueueUrl_Title": "AWS SQS Output Queue URL",
+    "PluginSettings_Setting_OutputQueueUrl_Description": "Tracking events arriving at the HTTP Tracking API are written to this AWS SQS Queue.",
+    "PluginSettings_Setting_InputQueueUrl_Title": "AWS SQS Input Queue URL",
+    "PluginSettings_Setting_InputQueueUrl_Description": "Events from this AWS SQS Queue are processed by Piwik and written to Piwik's database. This queue usually equals the output queue, but it allows you to process the events from the output queue before they are written back to Piwik.",
     "PluginSettings_Setting_KeepUsualBehaviour_Title": "Keep usual behaviour (do both write events to AWS SQS queue and process events immediately)"
   }
 }

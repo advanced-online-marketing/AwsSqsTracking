@@ -1,17 +1,10 @@
 <?php
-/**
- * Piwik - free/libre analytics platform
- *
- * @link http://piwik.org
- * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
- *
- */
 
-namespace Piwik\Plugins\AwsTracking\Tracker;
+namespace Piwik\Plugins\AwsSqsTracking\Tracker;
 
 use Aws\Sqs\SqsClient;
-use Piwik\Container\StaticContainer;
-use Piwik\Plugins\AwsTracking\SystemSettings;
+use Piwik\Common;
+use Piwik\Plugins\AwsSqsTracking\SystemSettings;
 use Piwik\Tracker;
 use Piwik\Tracker\RequestSet;
 
@@ -32,8 +25,12 @@ class Handler extends Tracker\Handler
     {
         parent::__construct();
 
-        /** @var SystemSettings $settings */
-        $settings = StaticContainer::get('Piwik\Plugins\AwsTracking\SystemSettings');
+        $settings = new SystemSettings();
+
+        // Overwrite default response unless we keep the usual tracking behaviour
+        if (!$settings->keepUsualBehaviour->getValue()) {
+            $this->setResponse(new Response());
+        }
 
         $this->client = SqsClient::factory([
             'region'  => $settings->region->getValue(),
@@ -54,21 +51,27 @@ class Handler extends Tracker\Handler
      */
     public function process(Tracker $tracker, RequestSet $requestSet)
     {
-        /** @var SystemSettings $settings */
-        $settings = StaticContainer::get('Piwik\Plugins\AwsTracking\SystemSettings');
+        $settings = new SystemSettings();
 
         // Write tracking event to AWS SQS queue
-        $this->client->sendMessage(array(
-            'QueueUrl'    => $settings->queueUrl->getValue(),
+        $this->client->sendMessage([
+            'QueueUrl' => $settings->outputQueueUrl->getValue(),
             'MessageBody' => json_encode($requestSet->getState()),
-        ));
+        ]);
+
+        Common::printDebug('AwsSqsTracking plugin: Wrote RequestSet to AWS SQS output queue.');
 
         // Keep usual behaviour and process tracking event as if this plugin would not exist?
         if ($settings->keepUsualBehaviour->getValue()) {
+
+            Common::printDebug('AwsSqsTracking plugin: Keep usual tracking behaviour.');
+
             foreach ($requestSet->getRequests() as $request) {
                 $tracker->trackRequest($request);
             }
+
         } else {
+            Common::printDebug('AwsSqsTracking plugin: Sending response immediately.');
             $this->sendResponseNow($tracker, $requestSet);
         }
     }

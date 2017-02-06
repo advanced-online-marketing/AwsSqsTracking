@@ -1,8 +1,13 @@
-# Piwik AwsTracking Plugin
+# Piwik AwsSqsTracking Plugin
 
 ## Description
 
-This plugin writes all tracking events into a specified AWS SQS queue. 
+This plugin is based on [Piwik's Queued Tracking plugin](https://plugins.piwik.org/QueuedTracking). 
 
-You can configure if the events should only be written to the AWS SQS queue or if they should be both written to the AWS 
-SQS queue and be processed regularly.
+When activated, it writes all incoming tracking events into a configurable AWS SQS queue.
+
+You can configure if the events should only be written to the AWS SQS queue or if they should be both written to the 
+AWS SQS queue and be processed regularly.
+
+By running `./console aws-sqs-tracking:process` the tracking events can be retrieved and processed from that queue or 
+from another queue.

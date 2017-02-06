@@ -1,6 +1,6 @@
 {
-  "name": "AwsTracking",
-  "version": "0.3.0",
+  "name": "AwsSqsTracking",
+  "version": "0.4.0",
   "description": "Sends Piwik tracking events to an AWS SQS queue.",
   "theme": false,
   "keywords": [
@@ -14,9 +14,9 @@
     "piwik": ">=3.0.0,<4.0.0-b1"
   },
   "support": {
-    "issues": "https://github.com/advanced-online-marketing/AwsTracking/issues",
-    "source": "https://github.com/advanced-online-marketing/AwsTracking",
-    "wiki": "https://github.com/advanced-online-marketing/AwsTracking/wiki"
+    "issues": "https://github.com/advanced-online-marketing/AwsSqsTracking/issues",
+    "source": "https://github.com/advanced-online-marketing/AwsSqsTracking",
+    "wiki": "https://github.com/advanced-online-marketing/AwsSqsTracking/wiki"
   },
   "authors": [
     {
