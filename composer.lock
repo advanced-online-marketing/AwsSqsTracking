@@ -4,21 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a34dbea540244d116d638e3180746c16",
     "content-hash": "88d69671fbe4aca40a8c6313a9ae5329",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.20.13",
+            "version": "3.22.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "343c6c96468de5087ae5e7df4ccee2668857a5aa"
+                "reference": "916f708c1a643f86f74eacd3c5be787b40d814f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/343c6c96468de5087ae5e7df4ccee2668857a5aa",
-                "reference": "343c6c96468de5087ae5e7df4ccee2668857a5aa",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/916f708c1a643f86f74eacd3c5be787b40d814f8",
+                "reference": "916f708c1a643f86f74eacd3c5be787b40d814f8",
                 "shasum": ""
             },
             "require": {
@@ -85,7 +84,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2017-01-04 18:20:17"
+            "time": "2017-02-14T21:23:54+00:00"
         },
         {
             "name": "aws/aws-sdk-php-resources",
@@ -135,7 +134,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-06-20 20:55:44"
+            "time": "2015-06-20T20:55:44+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -197,7 +196,7 @@
                 "rest",
                 "web service"
             ],
-            "time": "2016-10-08 15:01:37"
+            "time": "2016-10-08T15:01:37+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -248,7 +247,7 @@
             "keywords": [
                 "promise"
             ],
-            "time": "2016-12-20 10:07:11"
+            "time": "2016-12-20T10:07:11+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -306,7 +305,7 @@
                 "stream",
                 "uri"
             ],
-            "time": "2016-06-24 23:00:38"
+            "time": "2016-06-24T23:00:38+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",
@@ -361,7 +360,7 @@
                 "json",
                 "jsonpath"
             ],
-            "time": "2016-12-03 22:08:25"
+            "time": "2016-12-03T22:08:25+00:00"
         },
         {
             "name": "psr/http-message",
@@ -411,7 +410,7 @@
                 "request",
                 "response"
             ],
-            "time": "2016-08-06 14:39:51"
+            "time": "2016-08-06T14:39:51+00:00"
         }
     ],
     "packages-dev": [],
