@@ -3,7 +3,6 @@
 namespace Piwik\Plugins\AwsSqsTracking\Queue;
 
 use Aws\Sqs\SqsClient;
-use Piwik\Common;
 use Piwik\Plugins\AwsSqsTracking\SystemSettings;
 use Piwik\Tracker;
 use Piwik\Tracker\RequestSet;
@@ -22,6 +21,11 @@ class Processor
      */
     private $handler;
 
+    /**
+     * Processor constructor.
+     *
+     * @param LoggerInterface $logger
+     */
     public function __construct(LoggerInterface $logger)
     {
         $this->logger = $logger;
@@ -40,6 +44,10 @@ class Processor
         ]);
     }
 
+    /**
+     * @param Tracker|null $tracker
+     * @return Tracker
+     */
     public function process(Tracker $tracker = null)
     {
         $tracker = $tracker ?: new Tracker();
@@ -74,6 +82,13 @@ class Processor
 
                     $requestSetArray = json_decode($message['Body'], true);
                     if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
+                        $this->logger->error('Invalid tracking request set (JSON): ' . $message['Body']);
+                    }
+
+                    if (!is_array($requestSetArray)
+                        || !array_key_exists('content', $requestSetArray)
+                        || !is_array($requestSetArray['content'])
+                    ) {
                         $this->logger->error('Invalid tracking request set: ' . $message['Body']);
                     }
 

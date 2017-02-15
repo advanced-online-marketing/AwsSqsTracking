@@ -56,7 +56,10 @@ class Handler extends Tracker\Handler
         // Write tracking event to AWS SQS queue
         $this->client->sendMessage([
             'QueueUrl' => $settings->outputQueueUrl->getValue(),
-            'MessageBody' => json_encode($requestSet->getState()),
+            'MessageBody' => json_encode([
+                'piwik' => true,
+                'content' => $requestSet->getState()
+            ]),
         ]);
 
         Common::printDebug('AwsSqsTracking plugin: Wrote RequestSet to AWS SQS output queue.');
