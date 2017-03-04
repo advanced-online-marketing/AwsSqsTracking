@@ -93,7 +93,8 @@ class Processor
                     }
 
                     $requestSet = new RequestSet();
-                    $requestSet->restoreState($requestSetArray);
+
+                    $requestSet->restoreState($requestSetArray['content']);
 
                     $this->processRequestSet($tracker, $requestSet);
 
