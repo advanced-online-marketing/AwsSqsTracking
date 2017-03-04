@@ -17,6 +17,9 @@ class Handler
     private $count = 0;
     private $numTrackedRequestsBeginning = 0;
 
+    /**
+     * @param Tracker $tracker
+     */
     public function init(Tracker $tracker)
     {
         $this->requestSetsToRetry = [];
@@ -25,6 +28,10 @@ class Handler
         $this->transactionId = $this->getDb()->beginTransaction();
     }
 
+    /**
+     * @param Tracker $tracker
+     * @param RequestSet $requestSet
+     */
     public function process(Tracker $tracker, RequestSet $requestSet)
     {
         $requestSet->restoreEnvironment();
@@ -39,7 +46,11 @@ class Handler
 
                 $diffInMs = round(microtime(true) * 1000) - $startMs;
                 if ($diffInMs > 2000) {
-                    Common::printDebug(sprintf('The following request took more than 2 seconds (%d ms) to be tracked: %s', $diffInMs, var_export($request->getParams(), 1)));
+                    Common::printDebug(sprintf(
+                        'The following request took more than 2 seconds (%d ms) to be tracked: %s',
+                        $diffInMs,
+                        var_export($request->getParams(), 1)
+                    ));
                 }
 
                 $this->count++;

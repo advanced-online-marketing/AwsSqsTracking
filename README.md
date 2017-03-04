@@ -10,13 +10,13 @@ You can configure if the events should only be written to the AWS SQS queue or i
 AWS SQS queue and be processed regularly.
 
 By running `./console aws-sqs-tracking:process` the tracking events can be retrieved and processed from that queue or 
-from another queue.
+from another queue. The queue separation allows you to modify the events before they are consumed again.
 
 
 ## Event format
 
-The events that are written to the queue are in JSON format. **This is different from Piwik's Queued Tracking plugin.** 
-Here's an example:
+The events that are both written to the queue and consumed from the queue are in JSON format. **This is different from 
+Piwik's Queued Tracking plugin.** Here's an example:
 
     {
         "piwik": true,

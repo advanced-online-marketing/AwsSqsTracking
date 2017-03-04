@@ -28,6 +28,11 @@ class Process extends ConsoleCommand
         $this->setName('aws-sqs-tracking:process');
     }
 
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int|null|void
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // We use our own logger
@@ -40,6 +45,10 @@ class Process extends ConsoleCommand
         $tasksLoggerConsoleStreamHandler->setFormatter(new ColoredLineFormatter(null, $format, null, true, true));
         $this->logger->pushHandler($tasksLoggerConsoleStreamHandler);
 
+        // Increase memory-limit as this command requires some resources
+        $this->logger->info('Current "memory_limit": ' . ini_get('memory_limit'));
+        ini_set('memory_limit', '1024M');
+        $this->logger->info('Current "memory_limit" (after "ini_set(...)"): ' . ini_get('memory_limit'));
 
         $trackerEnvironment = new Environment('tracker');
         $trackerEnvironment->init();
