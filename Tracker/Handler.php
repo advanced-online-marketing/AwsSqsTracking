@@ -4,9 +4,11 @@ namespace Piwik\Plugins\AwsSqsTracking\Tracker;
 
 use Aws\Sqs\SqsClient;
 use Piwik\Common;
+use Piwik\Container\StaticContainer;
 use Piwik\Plugins\AwsSqsTracking\SystemSettings;
 use Piwik\Tracker;
 use Piwik\Tracker\RequestSet;
+use Psr\Log\LoggerInterface;
 
 /**
  * @method Response getResponse()
@@ -17,6 +19,11 @@ class Handler extends Tracker\Handler
      * @var SqsClient|static
      */
     private  $client;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
 
     /**
      * Handler constructor.
@@ -41,6 +48,9 @@ class Handler extends Tracker\Handler
             ],
 //            'debug' => true,
         ]);
+
+        $this->logger =StaticContainer::get('Psr\Log\LoggerInterface');
+
     }
 
     /**
@@ -53,14 +63,19 @@ class Handler extends Tracker\Handler
     {
         $settings = new SystemSettings();
 
-        // Write tracking event to AWS SQS queue
-        $this->client->sendMessage([
-            'QueueUrl' => $settings->outputQueueUrl->getValue(),
-            'MessageBody' => json_encode([
-                'piwik' => true,
-                'content' => $requestSet->getState()
-            ]),
-        ]);
+        try {
+            // Write tracking event to AWS SQS queue
+            $this->client->sendMessage([
+                'QueueUrl' => $settings->outputQueueUrl->getValue(),
+                'MessageBody' => json_encode([
+                    'piwik' => true,
+                    'content' => $requestSet->getState()
+                ]),
+            ]);
+        } catch (\Exception $e) {
+            $this->logger->error("Could not send message to SQS", [$e->getCode(), $e->getMessage()]);
+        }
+
 
         Common::printDebug('AwsSqsTracking plugin: Wrote RequestSet to AWS SQS output queue.');
 
