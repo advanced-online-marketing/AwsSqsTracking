@@ -1,12 +1,13 @@
 {
   "name": "AwsSqsTracking",
-  "version": "0.7.0",
-  "description": "Sends Piwik tracking events to an AWS SQS queue.",
+  "version": "0.7.1",
+  "description": "Sends Piwik tracking events to an AWS SQS queue and consumes it from an AWS SQS queue.",
   "theme": false,
   "keywords": [
     "tracker",
     "aws",
-    "sqs"
+    "sqs",
+    "queue"
   ],
   "license": "GPL v3+",
   "homepage": "http://www.advanced-online-marketing.com",
