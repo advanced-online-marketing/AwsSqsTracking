@@ -80,21 +80,20 @@ class Processor
 
                 foreach ($result->get('Messages') as $message) {
 
-                    // Log to aws-output-queue.txt
                     if ($settings->logAllCommunication->getValue()) {
-                        file_put_contents(PIWIK_INCLUDE_PATH . '/aws-output-queue.txt', $message['Body'], FILE_APPEND);
+                        $this->logger->debug('Got message from SQS: ', [$message['Body']]);
                     }
 
                     $requestSetArray = json_decode($message['Body'], true);
                     if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-                        $this->logger->error('Invalid tracking request set (JSON): ' . $message['Body']);
+                        $this->logger->error('Invalid tracking request set (JSON): ', [$message['Body']]);
                     }
 
                     if (!is_array($requestSetArray)
                         || !array_key_exists('content', $requestSetArray)
                         || !is_array($requestSetArray['content'])
                     ) {
-                        $this->logger->error('Invalid tracking request set: ' . $message['Body']);
+                        $this->logger->error('Invalid tracking request set: ', [$message['Body']]);
                     }
 
                     $requestSet = new RequestSet();

@@ -104,7 +104,7 @@ Piwik's Queued Tracking plugin.** Here's an example:
     }
 
 
-## Logging
+## Logging & debugging
 
-When the setting `log all communication` is enables, all AWS SQS queue communication (raw events) is written to 
-`aws-output-queue.txt` and `aws-input-queue.txt` respectively.
+When the plugin's setting `log all communication` is enabled, all AWS SQS queue communication (i.e. all outgoing and 
+incoming events) and all Piwik tracker debug messages are being logged in this plugin's log file `aws-sqs-tracking.log`.

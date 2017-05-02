@@ -70,9 +70,8 @@ class Handler extends Tracker\Handler
                 'content' => $requestSet->getState()
             ]);
 
-            // Log to aws-input-queue.txt
             if ($settings->logAllCommunication->getValue()) {
-                file_put_contents(PIWIK_INCLUDE_PATH . '/aws-input-queue.txt', $messageBody, FILE_APPEND);
+                $this->logger->debug('Will send message to SQS', [$messageBody]);
             }
                 // Write tracking event to AWS SQS queue
             $this->client->sendMessage([
@@ -80,7 +79,7 @@ class Handler extends Tracker\Handler
                 'MessageBody' => $messageBody,
             ]);
         } catch (\Exception $e) {
-            $this->logger->error("Could not send message to SQS", [$e->getCode(), $e->getMessage()]);
+            $this->logger->error('Could not send message to SQS', [$e->getCode(), $e->getMessage()]);
         }
 
 

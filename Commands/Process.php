@@ -11,6 +11,7 @@ use Piwik\Log;
 use Piwik\Piwik;
 use Piwik\Plugin\ConsoleCommand;
 use Piwik\Plugins\AwsSqsTracking\Queue\Processor;
+use Piwik\Plugins\AwsSqsTracking\SystemSettings;
 use Piwik\Tracker;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
@@ -59,8 +60,11 @@ class Process extends ConsoleCommand
         $trackerEnvironment->getContainer()->get('Piwik\Plugin\Manager')->setTrackerPluginsNotToLoad(['Provider']);
         Tracker::loadTrackerEnvironment();
 
-        if (OutputInterface::VERBOSITY_VERY_VERBOSE <= $output->getVerbosity()) {
+        // Enable extensive logging
+        $settings = new SystemSettings();
+        if ($settings->logAllCommunication->getValue()) {
             $GLOBALS['PIWIK_TRACKER_DEBUG'] = true;
+            $this->logger->debug('Logging of all AWS SQS queue communication and Piwik tracker debugging enabled.');
         }
 
         $this->logger->debug('Starting to process tracking events from AWS SQS input queue.');
