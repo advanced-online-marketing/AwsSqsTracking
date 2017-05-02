@@ -102,3 +102,9 @@ Piwik's Queued Tracking plugin.** Here's an example:
             "time": 1485555630
         }
     }
+
+
+## Logging
+
+When the setting `log all communication` is enables, all AWS SQS queue communication (raw events) is written to 
+`aws-output-queue.txt` and `aws-input-queue.txt` respectively.

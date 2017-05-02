@@ -64,13 +64,20 @@ class Handler extends Tracker\Handler
         $settings = new SystemSettings();
 
         try {
-            // Write tracking event to AWS SQS queue
+
+            $messageBody = json_encode([
+                'piwik' => true,
+                'content' => $requestSet->getState()
+            ]);
+
+            // Log to aws-input-queue.txt
+            if ($settings->logAllCommunication->getValue()) {
+                file_put_contents(PIWIK_INCLUDE_PATH . '/aws-input-queue.txt', $messageBody, FILE_APPEND);
+            }
+                // Write tracking event to AWS SQS queue
             $this->client->sendMessage([
                 'QueueUrl' => $settings->outputQueueUrl->getValue(),
-                'MessageBody' => json_encode([
-                    'piwik' => true,
-                    'content' => $requestSet->getState()
-                ]),
+                'MessageBody' => $messageBody,
             ]);
         } catch (\Exception $e) {
             $this->logger->error("Could not send message to SQS", [$e->getCode(), $e->getMessage()]);

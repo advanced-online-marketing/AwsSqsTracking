@@ -42,6 +42,11 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
      */
     public $keepUsualBehaviour;
 
+    /**
+     * @var Setting
+     */
+    public $logAllCommunication;
+
     protected function init()
     {
         $this->accessKey = $this->createAccessKeySetting();
@@ -50,8 +55,12 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         $this->outputQueueUrl = $this->createOutputQueueUrlSetting();
         $this->inputQueueUrl = $this->createInputQueueUrlSetting();
         $this->keepUsualBehaviour = $this->createKeepUsualBehaviourSetting();
+        $this->logAllCommunication = $this->createLogAllCommunicationSetting();
     }
 
+    /**
+     * @return \Piwik\Settings\Plugin\SystemSetting
+     */
     private function createAccessKeySetting()
     {
         return $this->makeSetting(
@@ -65,6 +74,9 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         );
     }
 
+    /**
+     * @return \Piwik\Settings\Plugin\SystemSetting
+     */
     private function createSecretKeySetting()
     {
         return $this->makeSetting(
@@ -78,6 +90,9 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         );
     }
 
+    /**
+     * @return \Piwik\Settings\Plugin\SystemSetting
+     */
     private function createRegionSetting()
     {
         return $this->makeSetting(
@@ -92,6 +107,9 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         );
     }
 
+    /**
+     * @return \Piwik\Settings\Plugin\SystemSetting
+     */
     private function createOutputQueueUrlSetting()
     {
         return $this->makeSetting(
@@ -108,6 +126,9 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         );
     }
 
+    /**
+     * @return \Piwik\Settings\Plugin\SystemSetting
+     */
     private function createInputQueueUrlSetting()
     {
         return $this->makeSetting(
@@ -124,6 +145,9 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         );
     }
 
+    /**
+     * @return \Piwik\Settings\Plugin\SystemSetting
+     */
     private function createKeepUsualBehaviourSetting()
     {
         return $this->makeSetting(
@@ -137,4 +161,19 @@ class SystemSettings extends \Piwik\Settings\Plugin\SystemSettings
         );
     }
 
+    /**
+     * @return \Piwik\Settings\Plugin\SystemSetting
+     */
+    private function createLogAllCommunicationSetting()
+    {
+        return $this->makeSetting(
+            'logAllCommunication',
+            $default = true,
+            FieldConfig::TYPE_BOOL,
+            function (FieldConfig $field) {
+                $field->title = Piwik::translate('AwsSqsTracking_PluginSettings_Setting_LogAllCommunication_Title');
+                $field->uiControl = FieldConfig::UI_CONTROL_CHECKBOX;
+            }
+        );
+    }
 }
