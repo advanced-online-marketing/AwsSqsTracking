@@ -8,6 +8,7 @@
     "PluginSettings_Setting_OutputQueueUrl_Description": "Tracking events arriving at the HTTP Tracking API are written to this AWS SQS Queue.",
     "PluginSettings_Setting_InputQueueUrl_Title": "AWS SQS Input Queue URL",
     "PluginSettings_Setting_InputQueueUrl_Description": "Events from this AWS SQS Queue are processed by Piwik and written to Piwik's database. This queue usually equals the output queue, but it allows you to process the events from the output queue before they are written back to Piwik.",
-    "PluginSettings_Setting_KeepUsualBehaviour_Title": "Keep usual behaviour (do both write events to AWS SQS queue and process events immediately)"
+    "PluginSettings_Setting_KeepUsualBehaviour_Title": "Keep usual behaviour (do both write events to AWS SQS queue and process events immediately)",
+    "PluginSettings_Setting_LogAllCommunication_Title": "Log all communication (writes events to aws-output-queue.txt and aws-input-queue.txt)"
   }
 }

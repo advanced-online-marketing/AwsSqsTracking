@@ -38,7 +38,7 @@ class Process extends ConsoleCommand
         // We use our own logger
         $format = '%level_name% [%datetime%]: %message% %context% %extra%';
         $this->logger = new Logger('aws-sqs-tracking');
-        $tasksLoggerFileStreamHandler = new StreamHandler(PIWIK_INCLUDE_PATH . '/aom-tasks.log', Logger::DEBUG);
+        $tasksLoggerFileStreamHandler = new StreamHandler(PIWIK_INCLUDE_PATH . '/aws-sqs-tracking.log', Logger::DEBUG);
         $tasksLoggerFileStreamHandler->setFormatter(new LineFormatter($format . "\n", null, true, true));
         $this->logger->pushHandler($tasksLoggerFileStreamHandler);
         $tasksLoggerConsoleStreamHandler = new StreamHandler('php://stdout', Logger::DEBUG);

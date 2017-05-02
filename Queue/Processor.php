@@ -80,6 +80,11 @@ class Processor
 
                 foreach ($result->get('Messages') as $message) {
 
+                    // Log to aws-output-queue.txt
+                    if ($settings->logAllCommunication->getValue()) {
+                        file_put_contents(PIWIK_INCLUDE_PATH . '/aws-output-queue.txt', $message['Body'], FILE_APPEND);
+                    }
+
                     $requestSetArray = json_decode($message['Body'], true);
                     if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
                         $this->logger->error('Invalid tracking request set (JSON): ' . $message['Body']);
