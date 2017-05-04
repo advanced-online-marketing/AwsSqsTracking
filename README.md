@@ -112,3 +112,13 @@ When the plugin's setting `log all communication` is enabled, all AWS SQS queue 
 incoming events) are being logged in this plugin's log file `aws-sqs-tracking.log`.
 
 All Piwik tracker debug messages are currently only logged to the console. 
+
+
+## Installation on Ubuntu
+
+As this plugin is not available on Piwik's marketplace, it must be installed manually.
+
+From Piwik's plugin directory:
+
+    sudo wget https://github.com/advanced-online-marketing/AwsSqsTracking/archive/master.zip && sudo unzip master.zip && sudo rm master.zip && sudo chown -R www-data:www-data AwsSqsTracking-master
+    sudo rm -Rf AwsSqsTracking && sudo mv AwsSqsTracking-master AwsSqsTracking
