@@ -72,7 +72,7 @@ class Process extends ConsoleCommand
 
         $startTime = microtime(true);
         $processor = new Processor($this->logger);
-        $tracker   = $processor->process();
+        $tracker = $processor->process();
 
         $neededTime = (microtime(true) - $startTime);
         $numRequestsTracked = $tracker->getCountOfLoggedRequests();

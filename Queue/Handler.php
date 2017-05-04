@@ -62,6 +62,10 @@ class Handler
         $this->requestSetsToRetry[] = $requestSet;
     }
 
+    /**
+     * @param RequestSet $requestSet
+     * @param Exception $e
+     */
     public function onException(RequestSet $requestSet, Exception $e)
     {
         // todo: how do we want to handle DbException or RedisException?
