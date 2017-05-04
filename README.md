@@ -103,8 +103,12 @@ Piwik's Queued Tracking plugin.** Here's an example:
         }
     }
 
+**There should always be only one tracking request per message.**
+
 
 ## Logging & debugging
 
 When the plugin's setting `log all communication` is enabled, all AWS SQS queue communication (i.e. all outgoing and 
-incoming events) and all Piwik tracker debug messages are being logged in this plugin's log file `aws-sqs-tracking.log`.
+incoming events) are being logged in this plugin's log file `aws-sqs-tracking.log`.
+
+All Piwik tracker debug messages are currently only logged to the console. 

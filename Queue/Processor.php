@@ -45,12 +45,11 @@ class Processor
     }
 
     /**
-     * @param Tracker|null $tracker
      * @return Tracker
      */
-    public function process(Tracker $tracker = null)
+    public function process()
     {
-        $tracker = $tracker ?: new Tracker();
+        $tracker = new Tracker();
 
         if (!$tracker->shouldRecordStatistics()) {
             return $tracker;
@@ -81,19 +80,19 @@ class Processor
                 foreach ($result->get('Messages') as $message) {
 
                     if ($settings->logAllCommunication->getValue()) {
-                        $this->logger->debug('Got message from SQS: ', [$message['Body']]);
+                        $this->logger->debug('Got message from SQS: ' . $message['Body']);
                     }
 
                     $requestSetArray = json_decode($message['Body'], true);
                     if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-                        $this->logger->error('Invalid tracking request set (JSON): ', [$message['Body']]);
+                        $this->logger->error('Invalid tracking request set (JSON): ' . $message['Body']);
                     }
 
                     if (!is_array($requestSetArray)
                         || !array_key_exists('content', $requestSetArray)
                         || !is_array($requestSetArray['content'])
                     ) {
-                        $this->logger->error('Invalid tracking request set: ', [$message['Body']]);
+                        $this->logger->error('Invalid tracking request set: ' . $message['Body']);
                     }
 
                     $requestSet = new RequestSet();
@@ -132,8 +131,13 @@ class Processor
         try {
             $this->handler->process($tracker, $requestSet);
         } catch (\Exception $e) {
-            $this->logger->error('Failed to process a queued request set' . $e->getMessage());
+            $this->logger->error('Failed to process a queued request set: ' . $e->getMessage());
             $this->handler->onException($requestSet, $e);
+
+            // We do not want to consume events that we won't process correctly
+            if (strpos($e->getMessage(), 'Piwik\Tracker\VisitorRecognizer.findKnownVisitor()')) {
+                throw new \Exception('Aborting as ExternalVisitId installation is incomplete: ' . $e->getMessage());
+            }
         }
 
         if ($this->handler->hasErrors()) {

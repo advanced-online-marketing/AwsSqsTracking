@@ -23,7 +23,7 @@ class AwsSqsTracking extends \Piwik\Plugin
     public function registerEvents()
     {
         return [
-            'Tracker.newHandler' => 'replaceHandler'
+            'Tracker.newHandler' => 'replaceHandler',
         ];
     }
 
