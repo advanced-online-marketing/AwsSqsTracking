@@ -15,6 +15,7 @@ use Piwik\Plugins\AwsSqsTracking\SystemSettings;
 use Piwik\Tracker;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class Process extends ConsoleCommand
@@ -26,7 +27,9 @@ class Process extends ConsoleCommand
 
     protected function configure()
     {
-        $this->setName('aws-sqs-tracking:process');
+        $this
+            ->setName('aws-sqs-tracking:process')
+            ->addOption('message', null, InputOption::VALUE_OPTIONAL, 'A specific message to process', false);
     }
 
     /**
@@ -72,7 +75,7 @@ class Process extends ConsoleCommand
 
         $startTime = microtime(true);
         $processor = new Processor($this->logger);
-        $tracker = $processor->process();
+        $tracker = $processor->process($input->getOption('message'));
 
         $neededTime = (microtime(true) - $startTime);
         $numRequestsTracked = $tracker->getCountOfLoggedRequests();

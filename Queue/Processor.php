@@ -45,9 +45,10 @@ class Processor
     }
 
     /**
+     * @param string|bool $message Either a specific message that should be processed or false
      * @return Tracker
      */
-    public function process()
+    public function process($message)
     {
         $tracker = new Tracker();
 
@@ -60,57 +61,81 @@ class Processor
 
         $settings = new SystemSettings();
 
-        while (true) {
+        // Should we process only one specific message that has been provided when calling this command?
+        if ($message) {
 
-            // Stop command before we run out of memory (500 MB)
-            if (memory_get_usage(true) > 500000000) {
-                $this->logger->warning('Stopping command due to its high memory-consumption.');
-                return $tracker;
+            $requestSetArray = json_decode($message, true);
+            if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
+                $this->logger->error('Invalid tracking request set (JSON): ' . $message);
             }
 
-            $result = $this->client->receiveMessage([
-                'QueueUrl' => $settings->inputQueueUrl->getValue(),
-                'MaxNumberOfMessages' => 10,
-                'WaitTimeSeconds' => 10,
-            ]);
+            if (!is_array($requestSetArray)
+                || !array_key_exists('content', $requestSetArray)
+                || !is_array($requestSetArray['content'])
+            ) {
+                $this->logger->error('Invalid tracking request set: ' . $message);
+            }
 
-            if (null !== $result->get('Messages')) {
-                $processedMessages = [];
+            $requestSet = new RequestSet();
 
-                foreach ($result->get('Messages') as $message) {
+            $requestSet->restoreState($requestSetArray['content']);
 
-                    if ($settings->logAllCommunication->getValue()) {
-                        $this->logger->debug('Got message from SQS: ' . $message['Body']);
-                    }
+            $this->processRequestSet($tracker, $requestSet);
 
-                    $requestSetArray = json_decode($message['Body'], true);
-                    if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-                        $this->logger->error('Invalid tracking request set (JSON): ' . $message['Body']);
-                    }
+        } else {
 
-                    if (!is_array($requestSetArray)
-                        || !array_key_exists('content', $requestSetArray)
-                        || !is_array($requestSetArray['content'])
-                    ) {
-                        $this->logger->error('Invalid tracking request set: ' . $message['Body']);
-                    }
+            while (true) {
 
-                    $requestSet = new RequestSet();
-
-                    $requestSet->restoreState($requestSetArray['content']);
-
-                    $this->processRequestSet($tracker, $requestSet);
-
-                    $processedMessages[] = [
-                        'Id' => $message['MessageId'],
-                        'ReceiptHandle' => $message['ReceiptHandle']
-                    ];
+                // Stop command before we run out of memory (500 MB)
+                if (memory_get_usage(true) > 500000000) {
+                    $this->logger->warning('Stopping command due to its high memory-consumption.');
+                    return $tracker;
                 }
 
-                $this->client->deleteMessageBatch([
+                $result = $this->client->receiveMessage([
                     'QueueUrl' => $settings->inputQueueUrl->getValue(),
-                    'Entries' => $processedMessages
+                    'MaxNumberOfMessages' => 10,
+                    'WaitTimeSeconds' => 10,
                 ]);
+
+                if (null !== $result->get('Messages')) {
+                    $processedMessages = [];
+
+                    foreach ($result->get('Messages') as $message) {
+
+                        if ($settings->logAllCommunication->getValue()) {
+                            $this->logger->debug('Got message from SQS: ' . $message['Body']);
+                        }
+
+                        $requestSetArray = json_decode($message['Body'], true);
+                        if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
+                            $this->logger->error('Invalid tracking request set (JSON): ' . $message['Body']);
+                        }
+
+                        if (!is_array($requestSetArray)
+                            || !array_key_exists('content', $requestSetArray)
+                            || !is_array($requestSetArray['content'])
+                        ) {
+                            $this->logger->error('Invalid tracking request set: ' . $message['Body']);
+                        }
+
+                        $requestSet = new RequestSet();
+
+                        $requestSet->restoreState($requestSetArray['content']);
+
+                        $this->processRequestSet($tracker, $requestSet);
+
+                        $processedMessages[] = [
+                            'Id' => $message['MessageId'],
+                            'ReceiptHandle' => $message['ReceiptHandle']
+                        ];
+                    }
+
+                    $this->client->deleteMessageBatch([
+                        'QueueUrl' => $settings->inputQueueUrl->getValue(),
+                        'Entries' => $processedMessages
+                    ]);
+                }
             }
         }
 
