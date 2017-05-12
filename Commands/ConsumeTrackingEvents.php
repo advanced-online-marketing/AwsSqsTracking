@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class Process extends ConsoleCommand
+class ConsumeTrackingEvents extends ConsoleCommand
 {
     /**
      * @var LoggerInterface
@@ -29,7 +29,7 @@ class Process extends ConsoleCommand
     {
         $this
             ->setName('aws-sqs-tracking:process')
-            ->addOption('message', null, InputOption::VALUE_OPTIONAL, 'A specific message to process', false);
+            ->addOption('event', null, InputOption::VALUE_OPTIONAL, 'A specific tracking event to process', false);
     }
 
     /**
@@ -75,7 +75,7 @@ class Process extends ConsoleCommand
 
         $startTime = microtime(true);
         $processor = new Processor($this->logger);
-        $tracker = $processor->process($input->getOption('message'));
+        $tracker = $processor->process($input->getOption('event'));
 
         $neededTime = (microtime(true) - $startTime);
         $numRequestsTracked = $tracker->getCountOfLoggedRequests();
