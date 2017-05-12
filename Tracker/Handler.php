@@ -71,7 +71,7 @@ class Handler extends Tracker\Handler
             ]);
 
             if ($settings->logAllCommunication->getValue()) {
-                $this->logger->debug('Will send message to SQS: ' . $message['Body']);
+                $this->logger->debug('Will send message to SQS: ' . $messageBody);
             }
                 // Write tracking event to AWS SQS queue
             $this->client->sendMessage([
