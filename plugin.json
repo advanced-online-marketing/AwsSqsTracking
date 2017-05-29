@@ -1,6 +1,6 @@
 {
   "name": "AwsSqsTracking",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "Sends Piwik tracking events to an AWS SQS queue and consumes it from an AWS SQS queue.",
   "theme": false,
   "keywords": [
