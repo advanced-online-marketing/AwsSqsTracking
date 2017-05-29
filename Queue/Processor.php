@@ -96,7 +96,9 @@ class Processor
 
                         $requestSetArray = $this->getRequestSetArrayFromQueueMessage($message['Body']);
                         if (!$requestSetArray) {
-                            continue;
+
+                            // Before confirming messages we did not process we better crash hard.
+                            throw new \Exception('Invalid tracking request set.');
                         }
 
                         $requestSet = new RequestSet();
