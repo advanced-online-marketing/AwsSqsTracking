@@ -131,7 +131,7 @@ class Processor
     {
         $requestSetArray = json_decode($message, true);
         if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-            $this->logger->error('Invalid tracking request set (JSON): ' . $message);
+            $this->logger->error('Invalid tracking request set (entirely invalid JSON): ' . $message);
             return false;
         }
 
@@ -148,7 +148,7 @@ class Processor
 
             $requestSetArray = json_decode($requestSetArray['Message'], true);
             if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->error('Invalid tracking request set: ' . $message);
+                $this->logger->error('Invalid tracking request set (invalid SNS JSON): ' . $message);
                 return false;
             }
 
@@ -156,13 +156,13 @@ class Processor
                 || !array_key_exists('MessageBody', $requestSetArray)
                 || !is_string($requestSetArray['MessageBody'])
             ) {
-                $this->logger->error('Invalid tracking request set: ' . $message);
+                $this->logger->error('Invalid tracking request set (invalid SNS structure): ' . $message);
                 return false;
             }
 
             $requestSetArray = json_decode($requestSetArray['MessageBody'], true);
             if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->error('Invalid tracking request set: ' . $message);
+                $this->logger->error('Invalid tracking request set (invalid SNS MessageBody JSON): ' . $message);
                 return false;
             }
 
@@ -174,6 +174,7 @@ class Processor
             }
         }
 
+        $this->logger->error('Invalid tracking request set (unknown error): ' . $message);
         return false;
     }
 
