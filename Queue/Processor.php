@@ -64,21 +64,8 @@ class Processor
         // Should we process only one specific message that has been provided when calling this command?
         if ($message) {
 
-            $requestSetArray = json_decode($message, true);
-            if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-                $this->logger->error('Invalid tracking request set (JSON): ' . $message);
-            }
-
-            if (!is_array($requestSetArray)
-                || !array_key_exists('content', $requestSetArray)
-                || !is_array($requestSetArray['content'])
-            ) {
-                $this->logger->error('Invalid tracking request set: ' . $message);
-            }
-
             $requestSet = new RequestSet();
-
-            $requestSet->restoreState($requestSetArray['content']);
+            $requestSet->restoreState($this->getRequestSetArrayFromQueueMessage($message));
 
             $this->processRequestSet($tracker, $requestSet);
 
@@ -107,21 +94,13 @@ class Processor
                             $this->logger->debug('Got message from SQS: ' . $message['Body']);
                         }
 
-                        $requestSetArray = json_decode($message['Body'], true);
-                        if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
-                            $this->logger->error('Invalid tracking request set (JSON): ' . $message['Body']);
-                        }
-
-                        if (!is_array($requestSetArray)
-                            || !array_key_exists('content', $requestSetArray)
-                            || !is_array($requestSetArray['content'])
-                        ) {
-                            $this->logger->error('Invalid tracking request set: ' . $message['Body']);
+                        $requestSetArray = $this->getRequestSetArrayFromQueueMessage($message['Body']);
+                        if (!$requestSetArray) {
+                            continue;
                         }
 
                         $requestSet = new RequestSet();
-
-                        $requestSet->restoreState($requestSetArray['content']);
+                        $requestSet->restoreState($requestSetArray);
 
                         $this->processRequestSet($tracker, $requestSet);
 
@@ -142,6 +121,60 @@ class Processor
         $request->restoreEnvironment();
 
         return $tracker;
+    }
+
+    /**
+     * @param string $message
+     * @return array|bool
+     */
+    private function getRequestSetArrayFromQueueMessage($message)
+    {
+        $requestSetArray = json_decode($message, true);
+        if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
+            $this->logger->error('Invalid tracking request set (JSON): ' . $message);
+            return false;
+        }
+
+        // Is this a regular SQS message?
+        if (is_array($requestSetArray)
+            && array_key_exists('content', $requestSetArray)
+            && is_array($requestSetArray['content'])
+        ) {
+            return $requestSetArray['content'];
+        }
+
+        // Not a regular SQS message - Last chance is that this is a SNS message?
+        if (array_key_exists('Message', $requestSetArray)) {
+
+            $requestSetArray = json_decode($requestSetArray['Message'], true);
+            if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
+                $this->logger->error('Invalid tracking request set: ' . $message);
+                return false;
+            }
+
+            if (!is_array($requestSetArray)
+                || !array_key_exists('MessageBody', $requestSetArray)
+                || !is_string($requestSetArray['MessageBody'])
+            ) {
+                $this->logger->error('Invalid tracking request set: ' . $message);
+                return false;
+            }
+
+            $requestSetArray = json_decode($requestSetArray['MessageBody'], true);
+            if ($requestSetArray === null && json_last_error() !== JSON_ERROR_NONE) {
+                $this->logger->error('Invalid tracking request set: ' . $message);
+                return false;
+            }
+
+            if (is_array($requestSetArray)
+                && array_key_exists('content', $requestSetArray)
+                && is_array($requestSetArray['content'])
+            ) {
+                return $requestSetArray['content'];
+            }
+        }
+
+        return false;
     }
 
     /**

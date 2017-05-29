@@ -112,7 +112,7 @@ class Handler extends Tracker\Handler
 
         // We always set the code to 200 (as the Tracker might not really process the message and return 400 otherwise)
         Common::sendResponseCode(200);
-        
+
         $response->sendResponseToBrowserDirectly();
     }
 }
