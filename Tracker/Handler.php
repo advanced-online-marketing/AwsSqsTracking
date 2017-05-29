@@ -109,7 +109,10 @@ class Handler extends Tracker\Handler
         $response = $this->getResponse();
         $response->outputResponse($tracker);
         $this->redirectIfNeeded($requestSet);
+
+        // We always set the code to 200 (as the Tracker might not really process the message and return 400 otherwise)
         Common::sendResponseCode(200);
+
         $response->sendResponseToBrowserDirectly();
     }
 }
